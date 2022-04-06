@@ -21,14 +21,15 @@ const store = new Map([
   [1, { price: 10000, name: 'The Twelve-Factor App' }],
 ]);
 
-app.post(async (req, res) => {
+app.post('/checkout', async (req, res) => {
   console.log(`🔰 Request:`, req);
   try {
     res.json({success: 'OK'});
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
-})
+});
 
-// Start server on port
-app.listen(4242);
+console.log(`🔰 Server is running on port: ${process.env.SERVER_PORT}`);
+// Start server
+app.listen(process.env.SERVER_PORT);
