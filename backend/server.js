@@ -16,11 +16,38 @@ const stripeAPI = stripe(process.env.STRIPE_PRIVATE_KEY);
 // ToDo: change me
 // This is a list of items for selling
 
-const store = new Map([
-  [1, { price: 10000, name: 'JavaScript weird parts' }],
-  [1, { price: 10000, name: 'The Twelve-Factor App' }],
-]);
+// Products to sell
+const products =  [
+  {
+    id: 1,
+    name: 'JavaScript Understanding the Weird Parts',
+    author: 'Anthony Alicea',
+    price: 15.95,
+  },
+  {
+    id: 2,
+    name: 'CSS: The Missing Manual',
+    author: 'David McFarland',
+    price: 15.95,
+  },
+  {
+    id: 3,
+    name: 'Design Patterns: Elements of Reusable Object-Oriented Software',
+    author: 'Erich Gamma, Richard Helm, John Vlissides, Ralph Johnson',
+    price: 15.95,
+  },
+];
 
+/**
+ * Returns list of products
+ */
+app.get('/products', (req, res) => {
+  res.json(products);
+});
+
+/**
+ * Supports products checkout
+ */
 app.post('/checkout', async (req, res) => {
   console.log(`🔰 Request:`, req);
   try {
