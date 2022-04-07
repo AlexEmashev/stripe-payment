@@ -37,15 +37,14 @@ function App() {
   ];
 
   const submit = (): any => {
+    if (cart.length === 0) return;
+
     fetch('/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        id: 1,
-        quantity: 5,
-      }),
+      body: JSON.stringify(cart),
     }).then((res) => {
       if (res.ok) return res.json();
       return res.json().then((e) => console.error(e));
@@ -82,25 +81,69 @@ function App() {
   return (
     <>
       <div className="w3-bar w3-xlarge w3-padding w3-purple w3-opacity-min">
-        <a href="/" className="w3-bar-item w3-button">HOME</a>
-        <a href="/cart" className="w3-bar-item w3-button">CART</a>
+        <a
+          href="/"
+          className="w3-bar-item w3-button"
+        >
+          HOME
+        </a>
+        <a
+          href="/cart"
+          className="w3-bar-item w3-button"
+        >
+          CART
+        </a>
       </div>
       <div className="w3-content w3-padding">
         <h1 className="w3-center">Products</h1>
         <ul className="w3-ul w3-card-2">
           {products.map((product) => (
-            <li className="w3-cell-row" key={product.id}>
+            <li
+              className="w3-cell-row"
+              key={product.id}
+            >
               <div className="w3-cell">
 
                 <h4>{product.name}</h4>
                 {' '}
                 <p>{product.author}</p>
               </div>
-              <div className="w3-cell w3-cell-middle" style={{ width: 150 }}>
+              <div
+                className="w3-cell w3-cell-middle"
+                style={{ width: 100 }}
+              >
+                $
+                {product.price}
+              </div>
+              <div
+                className="w3-cell w3-cell-middle"
+                style={{ width: 150 }}
+              >
                 <div style={{ display: 'flex' }}>
-                  <button className="w3-button w3-purple" type="button" onClick={() => updateCart(product, 'remove')}>-</button>
-                  <input readOnly className="w3-input w3-border w3-center" type="text" style={{ width: 42 }} pattern="[0-9]{1}" size={1} maxLength={1} value={getProductAmount(product.id)} />
-                  <button className="w3-button w3-purple" type="button" onClick={() => updateCart(product, 'add')}>+</button>
+                  <button
+                    className="w3-button w3-purple"
+                    type="button"
+                    onClick={() => updateCart(product, 'remove')}
+                  >
+                    <b>-</b>
+                  </button>
+                  <input
+                    readOnly
+                    className="w3-input w3-border w3-center"
+                    type="text"
+                    style={{ width: 42 }}
+                    pattern="[0-9]{1}"
+                    size={1}
+                    maxLength={1}
+                    value={getProductAmount(product.id)}
+                  />
+                  <button
+                    className="w3-button w3-purple"
+                    type="button"
+                    onClick={() => updateCart(product, 'add')}
+                  >
+                    <b>+</b>
+                  </button>
                 </div>
               </div>
             </li>
@@ -125,7 +168,10 @@ function App() {
                     <br />
                     <span className="w3-small">{product.author}</span>
                   </td>
-                  <td className="w3-center">{product.price}</td>
+                  <td className="w3-center">
+                    $
+                    {product.price}
+                  </td>
                   <td className="w3-center">{product.amount}</td>
                 </tr>
               ))}
@@ -134,7 +180,13 @@ function App() {
         </div>
 
         <div className="w3-container w3-center w3-padding-24">
-          <button className="w3-button w3-purple" onClick={submit} type="submit">Make Order</button>
+          <button
+            className="w3-button w3-purple"
+            onClick={submit}
+            type="submit"
+          >
+            <b>Make Order</b>
+          </button>
         </div>
 
         <div className="w3-container">

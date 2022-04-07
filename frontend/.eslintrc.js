@@ -20,6 +20,7 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    'react/jsx-max-props-per-line': [1, { maximum: 1 }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
     'import/extensions': ['error', 'never', {
       svg: 'always', css: 'always', scss: 'always',
