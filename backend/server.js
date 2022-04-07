@@ -3,7 +3,9 @@ import dotenv from 'dotenv';
 import express from 'express';
 import stripe from 'stripe';
 
-dotenv.config();
+dotenv.config({path: '../.env'});
+
+console.log(`🔰 Env:`, process.env);
 
 const app = express();
 
@@ -51,12 +53,67 @@ app.get('/products', (req, res) => {
 app.post('/checkout', async (req, res) => {
   console.log(`🔰 Request:`, req);
   try {
-    res.json({success: 'OK'});
+    const buyingItems = getBuyingItems(req.body.items);
+
+    const session = await stripeAPI.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      line_items: buyingItems,
+      success_url: `${process.env.FRONTEND_SERVER_ADDRESS}/success`,
+      cancel_url: `${process.env.FRONTEND_SERVER_ADDRESS}/cancel`
+    });
+
+    res.json({success: session.url});
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
 });
 
-console.log(`🔰 Server is running on port: ${process.env.SERVER_PORT}`);
+function getBuyingItems(items) {
+  if (items === null || items === undefined) {
+    throw new Error(`No shopping cart object passed`);
+  }
+
+  if (items.length === 0) {
+    throw new Error(`Shopping cart is empty`);
+  }
+
+  const buyingItems = items.map(item => {
+    const buyingProduct = products.find(p => p.id === item.id);
+
+    if (!buyingProduct) {
+      throw new Error(`Can't find product with id=${item.id} and name=${item.name}`);
+    }
+
+    if (item.amount <= 0) {
+      throw new Error(`Can't buy ${amount} of ${item.name}`);
+    }
+
+    return {
+      price_data: {
+        currency: 'usd',
+        product_data: {
+          name: buyingProduct.name
+        },
+        unit_amount:getItemPriceInCents(buyingProduct.id, buyingProduct.price),
+      },
+      quantity: item.amount
+    }
+  });
+
+  return buyingItems;
+}
+
+function getItemPriceInCents(id, priceInDollars) {
+  if (priceInDollars === undefined
+    || priceInDollars === null
+    || Number.priceInDollars < 0
+  ) {
+    throw new Error(`Price should be 0 or more cents. Price of item with id=${id} is ${priceInDollars}`);
+  }
+  return priceInDollars * 100;
+}
+
+console.log(`🔰 Server is running on port: ${process.env.BACKEND_SERVER_PORT}`);
 // Start server
-app.listen(process.env.SERVER_PORT);
+app.listen(process.env.BACKEND_SERVER_PORT);

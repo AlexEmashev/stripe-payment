@@ -43,23 +43,24 @@ function App() {
   }, []);
 
   const submit = (): any => {
-    if (cart.length === 0) return;
+    // if (cart.length === 0) return;
 
     fetch('/checkout', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(cart),
+      body: JSON.stringify({ items: cart }),
     }).then((res) => {
       if (res.ok) return res.json();
-      return res.json().then((e) => console.error(e));
+
+      return res.json().then((json) => Promise.reject(json));
     })
       .then((response) => {
         console.log('🔰 response:', response);
       })
       .catch((e) => {
-        console.log('🔰 error:', e);
+        console.error(e);
       });
   };
 
@@ -140,7 +141,7 @@ function App() {
     </ul>
   );
 
-  const getProductsContent = () => {
+  const renderProductsContent = () => {
     switch (loading) {
       case 'progress':
         return (
@@ -153,12 +154,55 @@ function App() {
       case 'errored':
         return (
           <div className="w3-container w3-center w3-padding-24">
-            <h1 className="w3-center w3-red">Sorry, products list currently unavailable.</h1>
+            <h1 className="w3-center w3-text-red">Sorry, products list currently unavailable.</h1>
           </div>
         );
       default:
         return <>Something went wrong state not implemented</>;
     }
+  };
+
+  const renderCartContent = () => {
+    const cartItems = cart.length === 0
+      ? (
+        <tr>
+          <td
+            colSpan={3}
+            className="w3-center"
+          >
+            No items yet
+          </td>
+        </tr>
+      )
+      : cart.map((product) => (
+        <tr key={product.id}>
+          <td>
+            <span className="w3-large">{product.name}</span>
+            <br />
+            <span className="w3-small">{product.author}</span>
+          </td>
+          <td className="w3-center">
+            $
+            {product.price}
+          </td>
+          <td className="w3-center">{product.amount}</td>
+        </tr>
+      ));
+
+    return (
+      <table className="w3-table w3-border w3-bordered">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th className="w3-center">Price</th>
+            <th className="w3-center">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          { cartItems }
+        </tbody>
+      </table>
+    );
   };
 
   return (
@@ -179,34 +223,10 @@ function App() {
       </div>
       <div className="w3-content w3-padding">
         <h1 className="w3-center">Products</h1>
-        {getProductsContent()}
+        {renderProductsContent()}
         <div className="w3-container">
           <h2 className="w3-center">Cart</h2>
-          <table className="w3-table w3-border w3-bordered">
-            <thead>
-              <tr>
-                <th>Product</th>
-                <th className="w3-center">Price</th>
-                <th className="w3-center">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              {cart.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <span className="w3-large">{product.name}</span>
-                    <br />
-                    <span className="w3-small">{product.author}</span>
-                  </td>
-                  <td className="w3-center">
-                    $
-                    {product.price}
-                  </td>
-                  <td className="w3-center">{product.amount}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {renderCartContent()}
         </div>
 
         <div className="w3-container w3-center w3-padding-24">
