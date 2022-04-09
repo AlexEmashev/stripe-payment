@@ -48,22 +48,25 @@ app.get('/products', (req, res) => {
 });
 
 /**
- * Supports products checkout
+ * Create payment intent
  */
 app.post('/checkout', async (req, res) => {
-  console.log(`🔰 Request:`, req);
   try {
     const buyingItems = getBuyingItems(req.body.items);
+    const orderAmount = buyingItems.reduce((amount, currentItem) => (
+      currentItem.price_data.unit_amount * currentItem.quantity + amount), 0);
 
-    const session = await stripeAPI.checkout.sessions.create({
-      payment_method_types: ['card'],
-      mode: 'payment',
-      line_items: buyingItems,
-      success_url: `${process.env.FRONTEND_SERVER_ADDRESS}/success`,
-      cancel_url: `${process.env.FRONTEND_SERVER_ADDRESS}/cancel`
+    console.log(`🔰 Order amount:`, orderAmount);
+
+    const paymentIntent = await stripeAPI.paymentIntents.create({
+      amount: orderAmount,
+      currency: 'usd',
+      automatic_payment_methods: {
+        enabled: true,
+      }
     });
 
-    res.json({success: session.url});
+    res.json({clientSecret: paymentIntent.client_secret});
   } catch (e) {
     res.status(500).json({ error: e.message });
   }
