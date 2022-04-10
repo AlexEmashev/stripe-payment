@@ -61,6 +61,7 @@ export default function Layout(): ReactElement | null {
           type="button"
           onClick={onThemeChange}
           className="layout__theme-button"
+          title="Switch theme"
         >
           {getThemeIcon()}
         </button>
