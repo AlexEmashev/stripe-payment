@@ -8,3 +8,14 @@ export type Product = {
 export type CartProduct = Product & {
   amount: number;
 };
+
+export type PAYMENT_IDS =
+  'stripe'
+  |'tinkoff';
+
+export type PaymentSystem = {
+  id: PAYMENT_IDS;
+  title: string;
+  selected: boolean;
+  disabled: boolean;
+};

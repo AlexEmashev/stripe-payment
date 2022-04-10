@@ -1,51 +1,22 @@
-import { useCartContext } from 'hooks/useCartContext';
-import { CartProduct } from 'models/models';
-import Swal from 'sweetalert2';
 import React, { ReactElement } from 'react';
+import { useAppContext } from 'hooks/useAppContext';
+import { CartProduct } from 'models/models';
 import { useNavigate } from 'react-router-dom';
+import { getTotalPrice } from 'utils/price_utils';
 
 export default function PageCart(): ReactElement | null {
   const navigate = useNavigate();
-  const context = useCartContext();
+  const context = useAppContext();
 
   if (!context) return null;
 
-  const { cartState, cartDispatch } = context;
+  const { state: { cart } } = context;
 
-  const onSubmit = (): any => {
-    // if (cart.length === 0) return;
-
-    fetch('/checkout', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ items: cartState.products }),
-    }).then((res) => {
-      if (res.ok) return res.json();
-
-      return res.json().then((json) => Promise.reject(json));
-    })
-      .then((response) => {
-        console.log('🔰 response:', response);
-        cartDispatch({
-          type: 'SET_CLIENT_SECRET',
-          payload: response.clientSecret,
-        });
-
-        navigate('/payment');
-      })
-      .catch((e) => {
-        console.error(e);
-
-        Swal.fire({
-          icon: 'error',
-          text: e.message || e || '',
-        });
-      });
+  const onGoToPayment = (): any => {
+    navigate('/payment');
   };
 
-  const cartItems = cartState.products.length === 0
+  const cartItems = cart.length === 0
     ? (
       <tr>
         <td
@@ -56,7 +27,7 @@ export default function PageCart(): ReactElement | null {
         </td>
       </tr>
     )
-    : cartState.products.map((product: CartProduct) => (
+    : cart.map((product: CartProduct) => (
       <tr key={product.id}>
         <td>
           <span className="w3-large">{product.name}</span>
@@ -71,11 +42,13 @@ export default function PageCart(): ReactElement | null {
       </tr>
     ));
 
+  const total = getTotalPrice(cart);
+
   return (
     <>
-      <h1>Cart</h1>
+      <h1 className="w3-center">Cart</h1>
       <table className="w3-table w3-border w3-bordered">
-        <thead>
+        <thead className="color-info">
           <tr>
             <th>Product</th>
             <th className="w3-center">Price</th>
@@ -85,15 +58,25 @@ export default function PageCart(): ReactElement | null {
         <tbody>
           { cartItems }
         </tbody>
+        <tfoot>
+          <tr>
+            <th className="w3-right">Total</th>
+            <th className="w3-center">
+              {total}
+            </th>
+            <th>&nbsp;</th>
+          </tr>
+        </tfoot>
       </table>
 
       <div className="w3-container w3-center w3-padding-24">
         <button
-          className="w3-button w3-purple"
-          onClick={onSubmit}
+          disabled={!cart.length}
+          className="w3-button color-primary"
+          onClick={onGoToPayment}
           type="button"
         >
-          <b>Checkout</b>
+          <b>To payment</b>
         </button>
       </div>
     </>

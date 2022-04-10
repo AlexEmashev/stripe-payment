@@ -1,18 +1,21 @@
-import { useCartContext } from 'hooks/useCartContext';
+import Loader from 'components/Loader/Loader';
+import { useAppContext } from 'hooks/useAppContext';
 import { Product } from 'models/models';
 import React, { ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { priceString } from 'utils/price_utils';
 
 export default function PageProducts(): ReactElement | null {
   const navigate = useNavigate();
-  const context = useCartContext();
+  const context = useAppContext();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<'progress'|'finished'|'errored'>('progress');
 
   if (!context) return null;
 
   const {
-    cartState, cartDispatch,
+    state, dispatch,
   } = context;
 
   const getProducts = async (): Promise<Product[]> => fetch('/products', {
@@ -43,28 +46,37 @@ export default function PageProducts(): ReactElement | null {
   const updateCart = (product: Product, operation: 'add'|'remove') => {
     if (operation === 'add') {
       // ToDo: fix double rendering
-      cartDispatch({
-        type: 'ADD_PRODUCT',
+      dispatch({
+        type: 'CART_ADD_PRODUCT',
         payload: product,
       });
 
       return;
     }
 
-    cartDispatch({
-      type: 'REMOVE_PRODUCT',
+    dispatch({
+      type: 'CART_REMOVE_PRODUCT',
       payload: product,
     });
   };
 
   const proceedToCart = () => {
+    if (!state.cart.length) {
+      Swal.fire({
+        icon: 'warning',
+        text: 'Please select at least one product',
+      });
+
+      return;
+    }
+
     navigate('/cart');
   };
 
-  const getProductAmount = (id: number) => cartState.products.find((i) => i.id === id)?.amount || 0;
+  const getProductAmount = (id: number) => state.cart.find((i) => i.id === id)?.amount || 0;
 
   const renderProducts = () => (
-    <ul className="w3-ul w3-card-2">
+    <ul className="w3-ul w3-card-2 color-card">
       {products.map((product) => (
         <li
           className="w3-cell-row"
@@ -80,8 +92,7 @@ export default function PageProducts(): ReactElement | null {
             className="w3-cell w3-cell-middle"
             style={{ width: 100 }}
           >
-            $
-            {product.price}
+            {priceString(product.price)}
           </div>
           <div
             className="w3-cell w3-cell-middle"
@@ -89,7 +100,7 @@ export default function PageProducts(): ReactElement | null {
           >
             <div style={{ display: 'flex' }}>
               <button
-                className="w3-button w3-purple"
+                className="w3-button color-primary"
                 type="button"
                 onClick={() => updateCart(product, 'remove')}
               >
@@ -106,7 +117,7 @@ export default function PageProducts(): ReactElement | null {
                 value={getProductAmount(product.id)}
               />
               <button
-                className="w3-button w3-purple"
+                className="w3-button color-primary"
                 type="button"
                 onClick={() => updateCart(product, 'add')}
               >
@@ -123,8 +134,16 @@ export default function PageProducts(): ReactElement | null {
     switch (loading) {
       case 'progress':
         return (
-          <div className="w3-container w3-padding-24">
-            <h1 className="w3-center">⏳</h1>
+          <div
+            className="w3-container"
+            style={{
+              width: 200,
+              height: 200,
+              margin: '0 auto',
+              overflow: 'hidden',
+            }}
+          >
+            <Loader />
           </div>
         );
       case 'finished':
@@ -132,11 +151,15 @@ export default function PageProducts(): ReactElement | null {
       case 'errored':
         return (
           <div className="w3-container w3-center w3-padding-24">
-            <h1 className="w3-center w3-text-red">Sorry, products list currently unavailable.</h1>
+            <h1 className="w3-center color-text-danger">Sorry, products list currently unavailable.</h1>
           </div>
         );
       default:
-        return <>Something went wrong state not implemented</>;
+        return (
+          <div className="w3-container w3-center w3-padding-24">
+            <h1 className="w3-center color-text-danger">Something wrong happened during products loading.</h1>
+          </div>
+        );
     }
   };
 
@@ -147,8 +170,7 @@ export default function PageProducts(): ReactElement | null {
 
       <div className="w3-container w3-center w3-padding-24">
         <button
-          disabled={!(cartState.products.length)}
-          className="w3-button w3-purple"
+          className="w3-button color-primary"
           onClick={proceedToCart}
           type="button"
         >

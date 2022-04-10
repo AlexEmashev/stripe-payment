@@ -20,6 +20,8 @@ module.exports = {
     '@typescript-eslint',
   ],
   rules: {
+    'no-shadow': 'off',
+    '@typescript-eslint/no-shadow': ['error'],
     'react/jsx-max-props-per-line': [1, { maximum: 1 }],
     'react/jsx-filename-extension': [1, { extensions: ['.jsx', '.tsx'] }],
     'import/extensions': ['error', 'never', {

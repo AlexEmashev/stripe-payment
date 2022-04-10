@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import stripe from 'stripe';
 
-dotenv.config({path: '../.env'});
+dotenv.config();
 
 console.log(`🔰 Env:`, process.env);
 
@@ -50,7 +50,7 @@ app.get('/products', (req, res) => {
 /**
  * Create payment intent
  */
-app.post('/checkout', async (req, res) => {
+app.post('/checkout-stripe', async (req, res) => {
   try {
     const buyingItems = getBuyingItems(req.body.items);
     const orderAmount = buyingItems.reduce((amount, currentItem) => (
