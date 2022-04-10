@@ -108,7 +108,7 @@ export default function PageProducts(): ReactElement | null {
               </button>
               <input
                 readOnly
-                className="w3-input w3-border w3-center"
+                className="w3-input w3-border w3-center color-card"
                 type="text"
                 style={{ width: 42 }}
                 pattern="[0-9]{1}"
@@ -165,7 +165,7 @@ export default function PageProducts(): ReactElement | null {
 
   return (
     <>
-      <h1 className="w3-center">Products</h1>
+      <h1 className="w3-center color-text-base">Products</h1>
       {renderProductsContent()}
 
       <div className="w3-container w3-center w3-padding-24">

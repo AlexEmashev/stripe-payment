@@ -46,7 +46,7 @@ export default function PageCart(): ReactElement | null {
 
   return (
     <>
-      <h1 className="w3-center">Cart</h1>
+      <h1 className="w3-center color-text-base">Cart</h1>
       <table className="w3-table w3-border w3-bordered">
         <thead className="color-info">
           <tr>
@@ -55,10 +55,10 @@ export default function PageCart(): ReactElement | null {
             <th className="w3-center">Amount</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="color-base">
           { cartItems }
         </tbody>
-        <tfoot>
+        <tfoot className="color-base">
           <tr>
             <th className="w3-right">Total</th>
             <th className="w3-center">

@@ -1,4 +1,3 @@
-import { Stripe } from '@stripe/stripe-js';
 import React, { Dispatch } from 'react';
 import { Action, State } from 'reducers/appReducer';
 
@@ -9,7 +8,6 @@ import { Action, State } from 'reducers/appReducer';
 const AppContext = React.createContext<{
   state: State,
   dispatch: Dispatch<Action>,
-  stripePromise: Promise<Stripe|null>
 } | null>(null);
 
 /**

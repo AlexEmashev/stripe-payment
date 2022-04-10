@@ -19,3 +19,5 @@ export type PaymentSystem = {
   selected: boolean;
   disabled: boolean;
 };
+
+export type APP_THEMES = 'default'|'dark';

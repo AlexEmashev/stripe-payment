@@ -1,0 +1,24 @@
+.layout__title-bar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.layout__theme-button {
+  background-color: transparent;
+  width: 46px;
+  height: 46px;
+  font-size: 24px !important;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.layout__theme-button:hover,
+.layout__theme-button:active {
+  background-color:  var(--primary-background-color);
+}
+
+.layout__title-bar-spacer {
+  flex: 1 0 auto;
+}

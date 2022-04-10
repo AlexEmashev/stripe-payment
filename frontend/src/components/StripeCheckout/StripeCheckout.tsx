@@ -24,9 +24,9 @@ export default function StripeCheckout() {
   });
   // Get client-secret from our server after initializing a payment intent
   const [clientSecret, setClientSecret] = useState<string | null>(null);
+  const [isErrored, setisErrored] = useState<boolean>(false);
 
   const context = useAppContext();
-  const isLoading = !clientSecret || !context;
 
   // Get Stripe payment intent from our server
   useEffect(() => {
@@ -46,6 +46,7 @@ export default function StripeCheckout() {
       })
       .catch((error) => {
         console.error(error);
+        setisErrored(true);
 
         Swal.fire({
           icon: 'error',
@@ -54,8 +55,24 @@ export default function StripeCheckout() {
       });
   }, []);
 
+  const getIsLoading = () => {
+    if (isErrored) return false;
+
+    if (!clientSecret || !context) return true;
+
+    return false;
+  };
+
   const renderPaymentForm = () => {
-    if (isLoading) return null;
+    if (isErrored) {
+      return (
+        <h2 className="w3-center color-text-danger">
+          Error while initializing payment on the server.
+        </h2>
+      );
+    }
+
+    if (!context || !clientSecret) return null;
 
     const total = getTotalPrice(context.state.cart);
     const stripeOptions: StripeElementsOptions = {
@@ -75,7 +92,7 @@ export default function StripeCheckout() {
     );
   };
 
-  return isLoading ? (
+  return getIsLoading() ? (
     <div
       className="w3-container"
       style={{

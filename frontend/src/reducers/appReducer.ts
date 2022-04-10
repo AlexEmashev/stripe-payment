@@ -1,7 +1,9 @@
 /* eslint-disable no-redeclare */
 /* eslint-disable no-case-declarations */
 import { PAYMENT_SYSTEMS } from 'constants/constants';
-import { CartProduct, PaymentSystem, Product } from 'models/models';
+import {
+  APP_THEMES, CartProduct, PaymentSystem, Product,
+} from 'models/models';
 
 export type Action = {
   type:
@@ -14,7 +16,8 @@ export type Action = {
    |'CART_CLEAR'
    |'SET_CLIENT_SECRET'
    |'PAYMENT_SYSTEM_SELECT'
-   |'PAYMENT_SYSTEMS_SET';
+   |'PAYMENT_SYSTEMS_SET'
+   |'SET_THEME';
   payload: any;
 }
 
@@ -23,6 +26,7 @@ export type State = {
   products: Product[];
   cart: CartProduct[];
   paymentSystems: PaymentSystem[];
+  theme: APP_THEMES;
 }
 
 export const defaultState = {
@@ -30,6 +34,7 @@ export const defaultState = {
   products: [],
   cart: [],
   paymentSystems: PAYMENT_SYSTEMS,
+  theme: 'default' as APP_THEMES,
 };
 
 // eslint-disable-next-line default-param-last
@@ -124,6 +129,13 @@ const reducer = (state: State = defaultState, action: Action): State => {
       return {
         ...state,
         clientSecret,
+      };
+    }
+    case 'SET_THEME': {
+      const theme = action.payload as APP_THEMES;
+      return {
+        ...state,
+        theme,
       };
     }
     default:

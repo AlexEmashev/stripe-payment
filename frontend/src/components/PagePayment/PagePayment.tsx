@@ -25,7 +25,7 @@ export default function PagePayment(): ReactElement | null {
       case 'stripe':
         return <StripeCheckout />;
       default:
-        return <h1>This payment system is not supported yet</h1>;
+        return <h2 className="w3-center">This payment system is not yet supported</h2>;
     }
   };
 
@@ -43,9 +43,9 @@ export default function PagePayment(): ReactElement | null {
 
   return (
     <>
-      <h2 className="w3-center">Payment</h2>
+      <h2 className="w3-center color-base">Payment</h2>
       <div className="w3-container">
-        <h3 className="w3-center">Select payment system</h3>
+        <h3 className="w3-center color-base">Select payment system</h3>
         <div className="w3-bar w3-center">
           {renderPaymentSystems()}
         </div>

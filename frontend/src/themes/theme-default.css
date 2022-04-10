@@ -1,0 +1,25 @@
+.theme-default {
+  --primary-background-color: #f06445;
+  --primary-color: #fff;
+
+  --secondary-background-color: #4fc9da;
+  --secondary-color: #fff;
+
+  --danger-background-color: red;
+  --danger-color: white;
+
+  --warning-background-color: rgb(232, 196, 68);
+  --warning-color: #fff;
+
+  --success-background-color: #d8d935;
+  --success-color: #fff;
+
+  --info-background-color: #4fc9da;
+  --info-color: #fff;
+
+  --base-background-color: #f8f6f2;
+  --base-color: rgba(33, 31, 28, 0.80);
+
+  --card-background-color: #fff;
+  --card-color: #211f1c;
+}

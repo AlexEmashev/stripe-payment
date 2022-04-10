@@ -1,28 +1,5 @@
-.theme-default {
-  --primary-background-color: #f06445;
-  --primary-color: #fff;
-
-  --secondary-background-color: #4fc9da;
-  --secondary-color: #fff;
-
-  --danger-background-color: red;
-  --danger-color: white;
-
-  --warning-background-color: rgb(232, 196, 68);
-  --warning-color: #fff;
-
-  --success-background-color: #d8d935;
-  --success-color: #fff;
-
-  --info-background-color: #4fc9da;
-  --info-color: #fff;
-
-  --base-background-color: #f8f6f2;
-  --base-color: rgba(33, 31, 28, 0.80);
-
-  --card-background-color: #fff;
-  --card-color: #211f1c;
-}
+@import url('./themes/theme-default.css');
+@import url('./themes/theme-dark.css');
 
 .color-primary {
   transition: color 700ms, background-color 700ms;
@@ -30,10 +7,18 @@
   color: var(--primary-color);
 }
 
+.color-text-primary {
+  color: var(--primary-background-color);
+}
+
 .color-secondary {
   transition: color 700ms, background-color 700ms;
   background-color: var(--secondary-background-color);
   color: var(--secondary-color);
+}
+
+.color-text-secondary {
+  color: var(--primary-background-color);
 }
 
 .color-danger {
@@ -86,8 +71,16 @@
   color: var(--base-color);
 }
 
+.color-text-base {
+  color: var(--base-color);
+}
+
 .color-card {
   transition: color 700ms, background-color 700ms;
   background-color: var(--card-background-color);
+  color: var(--card-color);
+}
+
+.color-text-card {
   color: var(--card-color);
 }
