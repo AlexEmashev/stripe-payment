@@ -5,8 +5,6 @@ import stripe from 'stripe';
 
 dotenv.config();
 
-console.log(`🔰 Env:`, process.env);
-
 const app = express();
 
 // For all paths convert body to json
@@ -55,8 +53,6 @@ app.post('/checkout-stripe', async (req, res) => {
     const buyingItems = getBuyingItems(req.body.items);
     const orderAmount = buyingItems.reduce((amount, currentItem) => (
       currentItem.price_data.unit_amount * currentItem.quantity + amount), 0);
-
-    console.log(`🔰 Order amount:`, orderAmount);
 
     const paymentIntent = await stripeAPI.paymentIntents.create({
       amount: orderAmount,
